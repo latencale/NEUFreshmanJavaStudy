@@ -1,0 +1,20 @@
+根包：一般公司域名倒过来，e.g.com.neu.项目名
+
+.controller(专门用于与用户交互 web程序) ->service业务层（事务控制：事务提交或回滚）
+  ->dao(数据访问，持久化层)
+
+utils(工具类) pojo(实体类(关键) 数据方法传输+映射数据库表 映射物体) dto(数据传输对象) vo(与前端交互的对象) ~不同类型的包
+
+前端界面：view
+
+MVC架构：view 视图层->controller控制层->model(service+dao)
+
+json：一种数据格式
+e.g.
+1.json对象
+{"name":"Lisa","age":18,"score":95}
+2.json数组
+[
+{"name":"ZhangSan","age":18,"score":95}
+{"name":"Lisi","age":18,"score":90}
+]
