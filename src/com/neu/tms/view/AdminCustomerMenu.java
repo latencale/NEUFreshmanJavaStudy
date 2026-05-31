@@ -202,23 +202,23 @@ public class AdminCustomerMenu implements IMenu {
         }
 
         System.out.println("\n=== 客户列表 ===");
-        System.out.printf("%-4s %-10s %-6s %-6s %-15s %-12s %-10s %-10s %-15d\n", 
+        System.out.printf("%-4s %-10s %-6s %-6s %-15s %-12s %-10s %-10s %-15s\n", 
                 "ID", "姓名", "年龄", "性别", "联系电话", "老人类型", "楼号", "房间", "床位ID");
         System.out.println("--------------------------------------------------------------------------------------------------------");
         
         for (Customer c : customers) {
-            String sex = c.getCustomerSex() == 1 ? "男" : "女";
+            String sex = (c.getCustomerSex() != null && c.getCustomerSex() == 1) ? "男" : "女";
             String elderlyTypeStr = getElderlyType(c);
-            System.out.printf("%-4d %-10s %-6d %-6s %-15s %-12s %-10s %-10s %-15d\n",
-                    c.getId(),
-                    c.getCustomerName(),
-                    c.getCustomerAge(),
+            System.out.printf("%-4d %-10s %-6s %-6s %-15s %-12s %-10s %-10s %-15s\n",
+                    c.getId() != null ? c.getId() : 0,
+                    c.getCustomerName() != null ? c.getCustomerName() : "未知",
+                    c.getCustomerAge() != null ? c.getCustomerAge().toString() : "未知",
                     sex,
-                    c.getContactTel(),
+                    c.getContactTel() != null ? c.getContactTel() : "未知",
                     elderlyTypeStr,
-                    c.getBuildingNo(),
-                    c.getRoomNo(),
-                    c.getBedId());
+                    c.getBuildingNo() != null ? c.getBuildingNo() : "未知",
+                    c.getRoomNo() != null ? c.getRoomNo() : "未知",
+                    c.getBedId() != null ? c.getBedId().toString() : "未分配");
         }
         
         System.out.println("\n共查询到 " + customers.size() + " 条记录");

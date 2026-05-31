@@ -1,1 +1,36 @@
-[{"id":25,"roomNo":101,"bedStatus":2,"remarks":"测试床位","bedNo":"A"},{"id":32,"roomNo":101,"bedStatus":2,"remarks":"测试床位","bedNo":"A"},{"id":39,"roomNo":101,"bedStatus":2,"remarks":"测试床位","bedNo":"A"}]
+[ {
+  "id" : 25,
+  "roomNo" : 101,
+  "bedStatus" : 2,
+  "remarks" : "测试床位",
+  "bedNo" : "A",
+  "isDeleted" : null
+}, {
+  "id" : 39,
+  "roomNo" : 101,
+  "bedStatus" : 1,
+  "remarks" : "测试床位",
+  "bedNo" : "A",
+  "isDeleted" : 1
+}, {
+  "id" : 47,
+  "roomNo" : 101,
+  "bedStatus" : 2,
+  "remarks" : null,
+  "bedNo" : "B",
+  "isDeleted" : null
+}, {
+  "id" : 69,
+  "roomNo" : 101,
+  "bedStatus" : 2,
+  "remarks" : null,
+  "bedNo" : "C",
+  "isDeleted" : null
+}, {
+  "id" : 70,
+  "roomNo" : 201,
+  "bedStatus" : 1,
+  "remarks" : null,
+  "bedNo" : "A",
+  "isDeleted" : null
+} ]

@@ -2,6 +2,7 @@ package com.neu.tms.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.Customer;
 import com.neu.tms.utils.PersistentIdGenerator;
 
@@ -14,6 +15,10 @@ import java.util.stream.Collectors;
 public class CustomerDao {
     public static final File FILE_NAME = new File("data\\customers.json");
     private final ObjectMapper om = new ObjectMapper();
+
+    public CustomerDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 添加客户
@@ -78,7 +83,8 @@ public class CustomerDao {
      */
     public boolean updateCustomer(Customer customer) {
         try {
-            List<Customer> customerList = findAll();
+            // 使用 findAllIncludingDeleted() 确保能获取所有客户记录
+            List<Customer> customerList = findAllIncludingDeleted();
             boolean isUpdate = false;
 
             for (int i = 0; i < customerList.size(); i++) {

@@ -3,6 +3,7 @@ package com.neu.tms.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.BackDown;
 import com.neu.tms.pojo.Customer;
 import com.neu.tms.utils.PersistentIdGenerator;
@@ -16,6 +17,10 @@ import java.util.stream.Collectors;
 public class BackDownDao {
     public static final File FILE_NAME = new File("data\\backdowns.json");
     private final ObjectMapper om = new ObjectMapper();
+
+    public BackDownDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 添加退住登记

@@ -1,1 +1,1 @@
-{"id":1,"userName":"admin","password":"admin","userType":1}
+{"id":1,"createTime":null,"createBy":null,"updateTime":null,"updateBy":null,"isDeleted":null,"nickname":null,"username":"admin","password":"admin","sex":null,"email":null,"phoneNumber":null,"roleId":null}

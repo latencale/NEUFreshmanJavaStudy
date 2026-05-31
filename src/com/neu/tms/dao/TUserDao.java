@@ -1,6 +1,7 @@
 package com.neu.tms.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.TUser;
 import com.neu.tms.utils.PersistentIdGenerator;
 import java.io.File;
@@ -16,6 +17,10 @@ public class TUserDao {
     public static final File FILE_NAME = new File("data\\users.json");
     //实例化好一个json转换工具
     private final ObjectMapper om = new ObjectMapper();
+
+    public TUserDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 添加用户（带自增ID，不会覆盖文件，支持多个用户）
@@ -37,7 +42,7 @@ public class TUserDao {
     }
 
     /**
-     * 查询所有用户（已补全 ✅）
+     * 查询所有用户（已补全 ）
      */
     public List<TUser> findAll() {
         // 文件不存在 → 返回空集合

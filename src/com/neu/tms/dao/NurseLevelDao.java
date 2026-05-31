@@ -3,6 +3,7 @@ package com.neu.tms.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.NurseLevel;
 import com.neu.tms.utils.PersistentIdGenerator;
 
@@ -15,6 +16,10 @@ import java.util.stream.Collectors;
 public class NurseLevelDao {
     public static final File FILE_NAME = new File("data\\nurselevels.json");
     private final ObjectMapper om = new ObjectMapper();
+
+    public NurseLevelDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 添加护理级别

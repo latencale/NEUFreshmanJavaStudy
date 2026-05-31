@@ -8,6 +8,7 @@ public class Bed implements Serializable {
     private Integer bedStatus;
     private String remarks;
     private String bedNo;
+    private Integer isDeleted;
 
     public Bed() {
     }
@@ -18,6 +19,7 @@ public class Bed implements Serializable {
         this.bedStatus = bedStatus;
         this.remarks = remarks;
         this.bedNo = bedNo;
+        this.isDeleted = 0;
     }
 
     public Integer getId() {
@@ -60,6 +62,14 @@ public class Bed implements Serializable {
         this.bedNo = bedNo;
     }
 
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "Bed{" +
@@ -68,6 +78,7 @@ public class Bed implements Serializable {
                 ", bedStatus=" + bedStatus +
                 ", remarks='" + remarks + '\'' +
                 ", bedNo='" + bedNo + '\'' +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

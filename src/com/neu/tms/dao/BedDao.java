@@ -1,8 +1,8 @@
-
 package com.neu.tms.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.Bed;
 import com.neu.tms.utils.PersistentIdGenerator;
 
@@ -10,10 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BedDao {
     public static final File FILE_NAME = new File("data\\beds.json");
     private final ObjectMapper om = new ObjectMapper();
+
+    public BedDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 添加床位
@@ -22,6 +27,7 @@ public class BedDao {
         try {
             List<Bed> bedList = findAll();
             bed.setId(PersistentIdGenerator.getInstance().nextId());
+            bed.setIsDeleted(0);
             bedList.add(bed);
             om.writeValue(FILE_NAME, bedList);
             return "添加成功";
@@ -31,9 +37,26 @@ public class BedDao {
     }
 
     /**
-     * 查询所有床位
+     * 查询所有未删除的床位
      */
     public List<Bed> findAll() {
+        if (!FILE_NAME.exists()) {
+            return new ArrayList<>();
+        }
+        try {
+            List<Bed> allBeds = om.readValue(FILE_NAME, new TypeReference<List<Bed>>() {});
+            return allBeds.stream()
+                    .filter(b -> b.getIsDeleted() == null || b.getIsDeleted() == 0)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * 查询所有床位（包括已删除的）
+     */
+    public List<Bed> findAllIncludingDeleted() {
         if (!FILE_NAME.exists()) {
             return new ArrayList<>();
         }
@@ -62,7 +85,7 @@ public class BedDao {
         List<Bed> allBeds = findAll();
         return allBeds.stream()
                 .filter(b -> b.getRoomNo().equals(roomNo))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -72,7 +95,7 @@ public class BedDao {
         List<Bed> allBeds = findAll();
         return allBeds.stream()
                 .filter(b -> b.getBedStatus() == 1)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -82,7 +105,7 @@ public class BedDao {
         List<Bed> allBeds = findAll();
         return allBeds.stream()
                 .filter(b -> b.getRoomNo().equals(roomNo) && b.getBedStatus() == 1)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -90,7 +113,7 @@ public class BedDao {
      */
     public boolean updateBed(Bed bed) {
         try {
-            List<Bed> bedList = findAll();
+            List<Bed> bedList = findAllIncludingDeleted();
             boolean isUpdate = false;
 
             for (int i = 0; i < bedList.size(); i++) {
@@ -107,6 +130,33 @@ public class BedDao {
             return isUpdate;
         } catch (IOException e) {
             throw new RuntimeException("修改床位异常", e);
+        }
+    }
+
+    /**
+     * 逻辑删除床位
+     * @param id 要删除的床位ID
+     * @return true删除成功 false床位不存在
+     */
+    public boolean deleteById(Integer id) {
+        try {
+            List<Bed> bedList = findAll();
+            boolean isDelete = false;
+
+            for (Bed bed : bedList) {
+                if (bed.getId().equals(id)) {
+                    bed.setIsDeleted(1);
+                    isDelete = true;
+                    break;
+                }
+            }
+
+            if (isDelete) {
+                om.writeValue(FILE_NAME, bedList);
+            }
+            return isDelete;
+        } catch (IOException e) {
+            throw new RuntimeException("删除床位失败", e);
         }
     }
 

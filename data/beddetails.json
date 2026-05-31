@@ -1,0 +1,17 @@
+[ {
+  "id" : 71,
+  "startDate" : 1780191896020,
+  "endDate" : null,
+  "bedDetails" : "床位调换",
+  "customerId" : 33,
+  "bedId" : 47,
+  "isDeleted" : 0
+}, {
+  "id" : 72,
+  "startDate" : 1780191912592,
+  "endDate" : null,
+  "bedDetails" : "床位调换",
+  "customerId" : 40,
+  "bedId" : 69,
+  "isDeleted" : 0
+} ]

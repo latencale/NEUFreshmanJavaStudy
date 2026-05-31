@@ -74,16 +74,27 @@ public class AdminBedMenu implements IMenu {
         System.out.println("\n图例：[空闲] [有人] [外出]");
         System.out.println("===========================================");
 
-        System.out.print("请输入楼层号（直接回车显示第1层）：");
         Scanner sc = new Scanner(System.in);
+        System.out.print("请输入楼层号（直接回车显示第1层）：");
         String floorInput = sc.nextLine();
-        Integer floor = floorInput.isEmpty() ? 1 : Integer.parseInt(floorInput);
+        
+        Integer floor = 1;
+        if (!floorInput.isEmpty()) {
+            try {
+                floor = Integer.parseInt(floorInput);
+            } catch (NumberFormatException e) {
+                System.out.println("输入的楼层号无效，默认显示第1层");
+                floor = 1;
+            }
+        }
 
         Map<Integer, List<Bed>> roomMap = new TreeMap<>();
         for (Bed bed : allBeds) {
-            Integer roomFloor = getFloorFromRoomNo(bed.getRoomNo());
-            if (roomFloor.equals(floor)) {
-                roomMap.computeIfAbsent(bed.getRoomNo(), k -> new ArrayList<>()).add(bed);
+            if (bed.getRoomNo() != null) {
+                Integer roomFloor = getFloorFromRoomNo(bed.getRoomNo());
+                if (roomFloor.equals(floor)) {
+                    roomMap.computeIfAbsent(bed.getRoomNo(), k -> new ArrayList<>()).add(bed);
+                }
             }
         }
 
@@ -133,6 +144,7 @@ public class AdminBedMenu implements IMenu {
             System.out.println("3. 按房间查询床位");
             System.out.println("4. 查看床位详情");
             System.out.println("5. 修改床位状态");
+            System.out.println("6. 删除床位");
             System.out.println("0. 返回上一级");
             System.out.println("===========================");
             System.out.print("请选择：");
@@ -153,6 +165,9 @@ public class AdminBedMenu implements IMenu {
                     break;
                 case 5:
                     updateBedStatus(sc);
+                    break;
+                case 6:
+                    deleteBed(sc);
                     break;
                 case 0:
                     return;
@@ -336,6 +351,63 @@ public class AdminBedMenu implements IMenu {
             System.out.println("床位状态更新成功");
         } else {
             System.out.println("床位状态更新失败");
+        }
+    }
+
+    /**
+     * 删除床位
+     */
+    private void deleteBed(Scanner sc) {
+        System.out.println("\n==========删除床位==========");
+        
+        System.out.print("请输入要删除的床位ID：");
+        Integer bedId = sc.nextInt();
+        
+        Bed bed = bedDao.findById(bedId);
+        if (bed == null) {
+            System.out.println("未找到该床位");
+            return;
+        }
+
+        System.out.println("\n=== 床位信息 ===");
+        System.out.println("床位ID：" + bed.getId());
+        System.out.println("房间号：" + bed.getRoomNo());
+        System.out.println("床位号：" + bed.getBedNo());
+        System.out.println("状态：" + getBedStatusText(bed.getBedStatus()));
+        System.out.println("备注：" + (bed.getRemarks() != null ? bed.getRemarks() : "无"));
+
+        if (bed.getBedStatus() == 2) {
+            Customer customer = findCustomerByBedId(bedId);
+            if (customer != null) {
+                System.out.println("\n警告：该床位正在被使用！");
+                System.out.println("入住客户：" + customer.getCustomerName());
+                System.out.println("请先办理客户退住或调换床位后再删除。");
+                System.out.println("\n是否继续删除？（y/n）：");
+                String confirm = sc.next();
+                if (!"y".equalsIgnoreCase(confirm)) {
+                    System.out.println("已取消删除");
+                    return;
+                }
+            }
+        }
+
+        System.out.print("\n确认删除该床位？（y/n）：");
+        String confirm = sc.next();
+        
+        if (!"y".equalsIgnoreCase(confirm)) {
+            System.out.println("已取消删除");
+            return;
+        }
+
+        try {
+            boolean result = bedDao.deleteById(bedId);
+            if (result) {
+                System.out.println("床位删除成功！");
+            } else {
+                System.out.println("床位删除失败");
+            }
+        } catch (Exception e) {
+            System.out.println("删除床位失败：" + e.getMessage());
         }
     }
 

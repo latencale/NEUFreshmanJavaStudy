@@ -2,6 +2,7 @@ package com.neu.tms.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.neu.tms.pojo.Role;
 import com.neu.tms.utils.PersistentIdGenerator;
 
@@ -15,6 +16,10 @@ import java.util.stream.Collectors;
 public class RoleDao {
     public static final File FILE_NAME = new File("data\\roles.json");
     private final ObjectMapper om = new ObjectMapper();
+
+    public RoleDao() {
+        om.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     /**
      * 初始化默认角色数据

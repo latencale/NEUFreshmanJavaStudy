@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class AdminLoginMenu implements  IMenu{
     public void execute(){
         while(true){
-        //管理员界面
         System.out.println("==================系统管理员登录===============");
         Scanner sc=new Scanner(System.in);
         System.out.println("请输入账号");
@@ -25,6 +24,7 @@ public class AdminLoginMenu implements  IMenu{
             SessionManager.setCurrentUser(initialUser);
             AdminMainMenu amm=new AdminMainMenu();
             amm.execute();
+            break;
         }else{
             TUserService service=new TUserService();
             TUser db_user=service.findByAdminByNameAndPassword(userName,password);
@@ -32,6 +32,7 @@ public class AdminLoginMenu implements  IMenu{
                 SessionManager.setCurrentUser(db_user);
                 AdminMainMenu amm=new AdminMainMenu();
                 amm.execute();
+                break;
             }else{
                 System.out.println("用户名或密码错误，请重新输入");
                 continue;
