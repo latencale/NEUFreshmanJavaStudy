@@ -381,7 +381,7 @@ public class AdminUserMenu implements IMenu {
         String phoneNumber = sc.next();
 
         System.out.print("请输入密码（直接回车使用手机号后6位）：");
-        sc.nextLine(); // 消耗换行符
+        sc.nextLine();
         String password = sc.nextLine();
         
         String finalPassword;
@@ -403,8 +403,29 @@ public class AdminUserMenu implements IMenu {
         System.out.print("请输入邮箱（可为空，直接回车跳过）：");
         String email = sc.next();
 
-        System.out.print("请选择角色（1-管理员 2-健康管家）：");
-        Integer roleId = sc.nextInt();
+        RoleDao roleDao = new RoleDao();
+        List<Role> roles = roleDao.findAll();
+        
+        if (roles.isEmpty()) {
+            System.out.println("暂无可用角色，请先创建角色");
+            return;
+        }
+
+        System.out.println("\n=== 可选角色 ===");
+        for (int i = 0; i < roles.size(); i++) {
+            Role role = roles.get(i);
+            System.out.println((i + 1) + ". " + role.getName());
+        }
+        
+        System.out.print("\n请选择角色（输入序号）：");
+        int roleIndex = sc.nextInt();
+        
+        if (roleIndex < 1 || roleIndex > roles.size()) {
+            System.out.println("无效选择");
+            return;
+        }
+        
+        Role selectedRole = roles.get(roleIndex - 1);
 
         TUser user = new TUser();
         user.setNickname(nickname);
@@ -413,7 +434,7 @@ public class AdminUserMenu implements IMenu {
         user.setSex(sex);
         user.setEmail(email.isEmpty() ? null : email);
         user.setPhoneNumber(phoneNumber);
-        user.setRoleId(roleId);
+        user.setRoleId(selectedRole.getId());
         user.setCreateTime(new Date());
         user.setCreateBy(SessionManager.getCurrentUserName());
         user.setIsDeleted(0);
@@ -464,10 +485,18 @@ public class AdminUserMenu implements IMenu {
         TUserService service = new TUserService();
 
         System.out.print("请输入用户名（直接回车跳过）：");
-        input.nextLine(); // 消耗上一行的换行符
+        input.nextLine();
         String userName = input.nextLine();
 
-        System.out.print("请输入角色（1-管理员 2-健康管家，直接回车跳过）：");
+        RoleDao roleDao = new RoleDao();
+        List<Role> roles = roleDao.findAll();
+        
+        System.out.println("\n=== 可选角色 ===");
+        for (Role role : roles) {
+            System.out.println(role.getId() + " - " + role.getName());
+        }
+        
+        System.out.print("请输入角色ID（直接回车跳过）：");
         String roleIdStr = input.nextLine();
         Integer roleId = roleIdStr.isEmpty() ? null : Integer.parseInt(roleIdStr);
 
@@ -536,7 +565,7 @@ public class AdminUserMenu implements IMenu {
 
         System.out.println("\n请输入新信息（直接回车保持不变）：");
 
-        sc.nextLine(); // 消耗换行符
+        sc.nextLine();
 
         System.out.print("请输入真实姓名（当前：" + existingUser.getNickname() + "）：");
         String nicknameInput = sc.nextLine();
@@ -562,11 +591,30 @@ public class AdminUserMenu implements IMenu {
         String phoneInput = sc.nextLine();
         String phoneNumber = phoneInput.isEmpty() ? existingUser.getPhoneNumber() : phoneInput;
 
-        System.out.print("请选择角色（1-管理员 2-健康管家，当前：" + getRoleName(existingUser.getRoleId()) + "）：");
+        RoleDao roleDao = new RoleDao();
+        List<Role> roles = roleDao.findAll();
+        
+        System.out.println("\n=== 可选角色 ===");
+        for (int i = 0; i < roles.size(); i++) {
+            Role role = roles.get(i);
+            String currentMark = (existingUser.getRoleId() != null && existingUser.getRoleId().equals(role.getId())) ? " [当前]" : "";
+            System.out.println((i + 1) + ". " + role.getName() + currentMark);
+        }
+        
+        System.out.print("\n请选择角色（输入序号，直接回车保持不变）：");
         String roleIdInput = sc.nextLine();
-        Integer roleId = roleIdInput.isEmpty() ? existingUser.getRoleId() : Integer.parseInt(roleIdInput);
+        Integer roleId = roleIdInput.isEmpty() ? existingUser.getRoleId() : null;
+        
+        if (roleId == null) {
+            int roleIndex = Integer.parseInt(roleIdInput);
+            if (roleIndex < 1 || roleIndex > roles.size()) {
+                System.out.println("无效选择，保持原角色");
+                roleId = existingUser.getRoleId();
+            } else {
+                roleId = roles.get(roleIndex - 1).getId();
+            }
+        }
 
-        // 构建更新后的用户对象
         TUser user = new TUser();
         user.setId(existingUser.getId());
         user.setNickname(nickname);
