@@ -59,8 +59,11 @@ public class NurseRecordDao {
      */
     public List<NurseRecord> findByCustomerId(Integer customerId) {
         List<NurseRecord> allRecords = findAll();
+        if (customerId == null) {
+            return new ArrayList<>();
+        }
         return allRecords.stream()
-                .filter(r -> r.getCustomerId().equals(customerId))
+                .filter(r -> r.getCustomerId() != null && r.getCustomerId().equals(customerId))
                 .collect(Collectors.toList());
     }
 
@@ -69,8 +72,11 @@ public class NurseRecordDao {
      */
     public List<NurseRecord> findByUserId(Integer userId) {
         List<NurseRecord> allRecords = findAll();
+        if (userId == null) {
+            return new ArrayList<>();
+        }
         return allRecords.stream()
-                .filter(r -> r.getUserId().equals(userId))
+                .filter(r -> r.getUserId() != null && r.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
@@ -79,9 +85,12 @@ public class NurseRecordDao {
      */
     public List<NurseRecord> findByCustomerIdAndUserId(Integer customerId, Integer userId) {
         List<NurseRecord> allRecords = findAll();
+        if (customerId == null || userId == null) {
+            return new ArrayList<>();
+        }
         return allRecords.stream()
-                .filter(r -> r.getCustomerId().equals(customerId) && 
-                        r.getUserId().equals(userId))
+                .filter(r -> r.getCustomerId() != null && r.getCustomerId().equals(customerId) && 
+                        r.getUserId() != null && r.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 

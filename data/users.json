@@ -1,32 +1,4 @@
 [ {
-  "id" : 21,
-  "createTime" : 1779883258687,
-  "createBy" : null,
-  "updateTime" : 1780202901471,
-  "updateBy" : null,
-  "isDeleted" : 0,
-  "nickname" : "a",
-  "username" : "1000",
-  "password" : "000000",
-  "sex" : 0,
-  "email" : "000000",
-  "phoneNumber" : "000000",
-  "roleId" : 46
-}, {
-  "id" : 22,
-  "createTime" : 1779883520802,
-  "createBy" : null,
-  "updateTime" : null,
-  "updateBy" : null,
-  "isDeleted" : 0,
-  "nickname" : "1",
-  "username" : "1000",
-  "password" : "000000",
-  "sex" : 0,
-  "email" : "000000",
-  "phoneNumber" : "000000",
-  "roleId" : 2
-}, {
   "id" : 23,
   "createTime" : 1779984512230,
   "createBy" : null,
@@ -55,34 +27,6 @@
   "phoneNumber" : "13900139000",
   "roleId" : 2
 }, {
-  "id" : 31,
-  "createTime" : 1780128060389,
-  "createBy" : null,
-  "updateTime" : 1780201987935,
-  "updateBy" : null,
-  "isDeleted" : null,
-  "nickname" : "小王",
-  "username" : "worker001",
-  "password" : "123456",
-  "sex" : 1,
-  "email" : null,
-  "phoneNumber" : "13800138000",
-  "roleId" : 46
-}, {
-  "id" : 38,
-  "createTime" : 1780138739410,
-  "createBy" : null,
-  "updateTime" : null,
-  "updateBy" : null,
-  "isDeleted" : null,
-  "nickname" : "测试护工",
-  "username" : "worker001",
-  "password" : "123456",
-  "sex" : 1,
-  "email" : null,
-  "phoneNumber" : "13800138000",
-  "roleId" : 2
-}, {
   "id" : 74,
   "createTime" : 1780198607072,
   "createBy" : "admin",
@@ -95,5 +39,19 @@
   "sex" : 1,
   "email" : "1234352345",
   "phoneNumber" : "123542534",
+  "roleId" : 46
+}, {
+  "id" : 80,
+  "createTime" : 1780208395381,
+  "createBy" : "admin",
+  "updateTime" : null,
+  "updateBy" : null,
+  "isDeleted" : 0,
+  "nickname" : "小王",
+  "username" : "001",
+  "password" : "001",
+  "sex" : 0,
+  "email" : "0",
+  "phoneNumber" : "001",
   "roleId" : 46
 } ]

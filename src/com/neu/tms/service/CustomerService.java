@@ -29,8 +29,21 @@ public class CustomerService {
             // 验证床位是否空闲
             if (customer.getBedId() != null) {
                 Bed bed = bedDao.findById(customer.getBedId());
-                if (bed == null || bed.getBedStatus() != 1) {
-                    return "床位不可用";
+                if (bed == null) {
+                    // 检查是否是已删除的床位
+                    List<Bed> allBeds = bedDao.findAllIncludingDeleted();
+                    Bed deletedBed = allBeds.stream()
+                            .filter(b -> b.getId().equals(customer.getBedId()))
+                            .findFirst()
+                            .orElse(null);
+                    if (deletedBed != null && deletedBed.getIsDeleted() != null && deletedBed.getIsDeleted() == 1) {
+                        return "床位ID " + customer.getBedId() + " 已被删除，请选择其他床位";
+                    }
+                    return "床位ID " + customer.getBedId() + " 不存在";
+                }
+                if (bed.getBedStatus() != 1) {
+                    String statusStr = bed.getBedStatus() == 2 ? "有人" : "外出";
+                    return "床位不可用（当前状态：" + statusStr + "）";
                 }
             }
 

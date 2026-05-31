@@ -27,9 +27,11 @@ public class AdminBedMenu implements IMenu {
         while (true) {
             System.out.println("\n==========床位管理==========");
             System.out.println("1. 床位示意图");
-            System.out.println("2. 床位管理");
-            System.out.println("3. 床位调换");
-            System.out.println("4. 添加床位");
+            System.out.println("2. 床位查询");
+            System.out.println("3. 添加床位");
+            System.out.println("4. 修改床位");
+            System.out.println("5. 删除床位");
+            System.out.println("6. 床位调换");
             System.out.println("0. 返回上一级");
             System.out.println("===========================");
             System.out.print("请选择：");
@@ -40,13 +42,19 @@ public class AdminBedMenu implements IMenu {
                     showBedDiagram();
                     break;
                 case 2:
-                    manageBed(sc);
+                    queryBed(sc);
                     break;
                 case 3:
-                    swapBed(sc);
+                    addBed(sc);
                     break;
                 case 4:
-                    addBed(sc);
+                    updateBed(sc);
+                    break;
+                case 5:
+                    deleteBed(sc);
+                    break;
+                case 6:
+                    swapBed(sc);
                     break;
                 case 0:
                     return;
@@ -134,17 +142,15 @@ public class AdminBedMenu implements IMenu {
     }
 
     /**
-     * 床位管理
+     * 床位查询
      */
-    private void manageBed(Scanner sc) {
+    private void queryBed(Scanner sc) {
         while (true) {
-            System.out.println("\n==========床位管理==========");
+            System.out.println("\n==========床位查询==========");
             System.out.println("1. 查询所有床位");
             System.out.println("2. 查询空闲床位");
             System.out.println("3. 按房间查询床位");
             System.out.println("4. 查看床位详情");
-            System.out.println("5. 修改床位状态");
-            System.out.println("6. 删除床位");
             System.out.println("0. 返回上一级");
             System.out.println("===========================");
             System.out.print("请选择：");
@@ -162,12 +168,6 @@ public class AdminBedMenu implements IMenu {
                     break;
                 case 4:
                     viewBedDetails(sc);
-                    break;
-                case 5:
-                    updateBedStatus(sc);
-                    break;
-                case 6:
-                    deleteBed(sc);
                     break;
                 case 0:
                     return;
@@ -319,9 +319,11 @@ public class AdminBedMenu implements IMenu {
     }
 
     /**
-     * 修改床位状态
+     * 修改床位
      */
-    private void updateBedStatus(Scanner sc) {
+    private void updateBed(Scanner sc) {
+        System.out.println("\n==========修改床位==========");
+        
         System.out.print("请输入床位ID：");
         Integer bedId = sc.nextInt();
         
@@ -331,26 +333,58 @@ public class AdminBedMenu implements IMenu {
             return;
         }
 
-        System.out.println("当前状态：" + getBedStatusText(bed.getBedStatus()));
-        System.out.println("\n请选择新状态：");
-        System.out.println("1. 空闲");
-        System.out.println("2. 有人");
-        System.out.println("3. 外出");
+        String status = "";
+        switch (bed.getBedStatus()) {
+            case 1: status = "空闲"; break;
+            case 2: status = "有人"; break;
+            case 3: status = "外出"; break;
+            default: status = "未知";
+        }
+
+        System.out.println("\n=== 当前床位信息 ===");
+        System.out.println("床位ID：" + bed.getId());
+        System.out.println("房间号：" + bed.getRoomNo());
+        System.out.println("床位号：" + bed.getBedNo());
+        System.out.println("状态：" + status);
+        System.out.println("备注：" + (bed.getRemarks() != null ? bed.getRemarks() : "无"));
+
+        System.out.println("\n请选择要修改的内容：");
+        System.out.println("1. 修改床位状态");
+        System.out.println("2. 修改备注信息");
         System.out.print("请选择：");
         
-        int newStatus = sc.nextInt();
-        if (newStatus < 1 || newStatus > 3) {
-            System.out.println("无效的状态值");
+        int modifyType = sc.nextInt();
+        
+        if (modifyType == 1) {
+            System.out.println("\n请选择新状态：");
+            System.out.println("1. 空闲");
+            System.out.println("2. 有人");
+            System.out.println("3. 外出");
+            System.out.print("请选择：");
+            
+            int newStatus = sc.nextInt();
+            if (newStatus < 1 || newStatus > 3) {
+                System.out.println("无效的状态值");
+                return;
+            }
+
+            bed.setBedStatus(newStatus);
+        } else if (modifyType == 2) {
+            sc.nextLine();
+            System.out.print("请输入新备注（直接回车清空）：");
+            String remarks = sc.nextLine();
+            bed.setRemarks(remarks.isEmpty() ? null : remarks);
+        } else {
+            System.out.println("无效选择");
             return;
         }
 
-        bed.setBedStatus(newStatus);
         boolean result = bedDao.updateBed(bed);
         
         if (result) {
-            System.out.println("床位状态更新成功");
+            System.out.println("床位信息更新成功");
         } else {
-            System.out.println("床位状态更新失败");
+            System.out.println("床位信息更新失败");
         }
     }
 
@@ -382,7 +416,7 @@ public class AdminBedMenu implements IMenu {
                 System.out.println("\n警告：该床位正在被使用！");
                 System.out.println("入住客户：" + customer.getCustomerName());
                 System.out.println("请先办理客户退住或调换床位后再删除。");
-                System.out.println("\n是否继续删除？（y/n）：");
+                System.out.println("\n是否继续·删除？（y/n）：");
                 String confirm = sc.next();
                 if (!"y".equalsIgnoreCase(confirm)) {
                     System.out.println("已取消删除");

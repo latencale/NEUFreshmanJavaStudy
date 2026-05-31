@@ -67,4 +67,27 @@
   "userId" : -1,
   "levelId" : null,
   "familyMember" : "儿子-张三"
+}, {
+  "id" : 77,
+  "isDeleted" : 0,
+  "customerName" : "老王",
+  "customerAge" : 80,
+  "customerSex" : 1,
+  "idCard" : "2345124672345216724",
+  "roomNo" : "201",
+  "buildingNo" : "606",
+  "checkinDate" : 1743609600000,
+  "expirationDate" : 2369491200000,
+  "contactTel" : "13624563555",
+  "bedId" : 70,
+  "psychosomaticState" : "",
+  "attention" : "高血糖",
+  "birthday" : -768733200000,
+  "height" : "167",
+  "weight" : "67",
+  "bloodType" : "A",
+  "filepath" : null,
+  "userId" : 24,
+  "levelId" : 41,
+  "familyMember" : "小王"
 } ]

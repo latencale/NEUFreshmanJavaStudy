@@ -74,8 +74,22 @@ public class AdminHealthManagerMenu implements IMenu {
     private void viewWorkerServiceObjects(Scanner sc) {
         System.out.println("\n==========查看护工服务对象==========");
         
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            System.out.println("系统中没有健康管家角色");
+            return;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+        
         List<TUser> workers = userDao.findAll().stream()
-                .filter(u -> u.getRoleId() == 2)
+                .filter(u -> u.getRoleId() != null && healthManagerRoleIds.contains(u.getRoleId()))
                 .toList();
 
         if (workers.isEmpty()) {
@@ -129,8 +143,22 @@ public class AdminHealthManagerMenu implements IMenu {
     private void assignCustomerToWorker(Scanner sc) {
         System.out.println("\n==========为护工分配客户==========");
         
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            System.out.println("系统中没有健康管家角色");
+            return;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+        
         List<TUser> workers = userDao.findAll().stream()
-                .filter(u -> u.getRoleId() == 2)
+                .filter(u -> u.getRoleId() != null && healthManagerRoleIds.contains(u.getRoleId()))
                 .toList();
 
         if (workers.isEmpty()) {
@@ -197,8 +225,22 @@ public class AdminHealthManagerMenu implements IMenu {
     private void removeCustomerFromWorker(Scanner sc) {
         System.out.println("\n==========为护工移除客户==========");
         
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            System.out.println("系统中没有健康管家角色");
+            return;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+        
         List<TUser> workers = userDao.findAll().stream()
-                .filter(u -> u.getRoleId() == 2)
+                .filter(u -> u.getRoleId() != null && healthManagerRoleIds.contains(u.getRoleId()))
                 .toList();
 
         if (workers.isEmpty()) {

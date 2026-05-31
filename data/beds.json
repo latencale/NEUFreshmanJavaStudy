@@ -29,7 +29,7 @@
 }, {
   "id" : 70,
   "roomNo" : 201,
-  "bedStatus" : 1,
+  "bedStatus" : 2,
   "remarks" : null,
   "bedNo" : "A",
   "isDeleted" : null

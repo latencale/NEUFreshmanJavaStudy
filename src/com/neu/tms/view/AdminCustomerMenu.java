@@ -66,14 +66,34 @@ public class AdminCustomerMenu implements IMenu {
     private void addCustomer(Scanner sc) {
         System.out.println("\n==========入住登记==========");
         
+        com.neu.tms.dao.BedDao bedDao = new com.neu.tms.dao.BedDao();
+        List<com.neu.tms.pojo.Bed> availableBeds = bedDao.findAvailableBeds();
+        
+        if (availableBeds.isEmpty()) {
+            System.out.println("当前没有空闲床位，无法办理入住！");
+            return;
+        }
+        
+        System.out.println("\n=== 当前可用床位 ===");
+        System.out.printf("%-10s %-10s %-10s\n", "床位ID", "房间号", "床位号");
+        System.out.println("------------------------------");
+        for (com.neu.tms.pojo.Bed bed : availableBeds) {
+            System.out.printf("%-10d %-10s %-10s\n", 
+                    bed.getId(), 
+                    bed.getRoomNo().toString(),
+                    bed.getBedNo());
+        }
+        System.out.println();
+        
+        sc.nextLine();
         System.out.print("请输入客户姓名：");
-        String customerName = sc.next();
+        String customerName = sc.nextLine();
 
         System.out.print("请输入出生日期（yyyy-MM-dd）：");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date birthday = null;
         try {
-            String birthdayStr = sc.next();
+            String birthdayStr = sc.nextLine();
             birthday = sdf.parse(birthdayStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误");
@@ -83,40 +103,39 @@ public class AdminCustomerMenu implements IMenu {
         Integer customerAge = calculateAge(birthday);
 
         System.out.print("请输入性别（0-女 1-男）：");
-        Integer customerSex = sc.nextInt();
+        Integer customerSex = Integer.parseInt(sc.nextLine());
 
         System.out.print("请输入身份证号：");
-        String idCard = sc.next();
+        String idCard = sc.nextLine();
 
         System.out.print("请输入血型：");
-        String bloodType = sc.next();
+        String bloodType = sc.nextLine();
 
         System.out.print("请输入家属成员：");
-        sc.nextLine();
         String familyMember = sc.nextLine();
 
         System.out.print("请输入联系电话：");
-        String contactTel = sc.next();
+        String contactTel = sc.nextLine();
 
         System.out.print("请输入身高（cm）：");
-        String height = sc.next();
+        String height = sc.nextLine();
 
         System.out.print("请输入体重（kg）：");
-        String weight = sc.next();
+        String weight = sc.nextLine();
 
         System.out.println("楼栋固定为：606");
         String buildingNo = "606";
 
         System.out.print("请输入房间号：");
-        String roomNo = sc.next();
+        String roomNo = sc.nextLine();
 
         System.out.print("请输入床位号：");
-        Integer bedId = sc.nextInt();
+        Integer bedId = Integer.parseInt(sc.nextLine());
 
         System.out.print("请输入入住时间（yyyy-MM-dd）：");
         Date checkinDate = null;
         try {
-            String checkinDateStr = sc.next();
+            String checkinDateStr = sc.nextLine();
             checkinDate = sdf.parse(checkinDateStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误");
@@ -126,27 +145,23 @@ public class AdminCustomerMenu implements IMenu {
         System.out.print("请输入合同到期时间（yyyy-MM-dd）：");
         Date expirationDate = null;
         try {
-            String expirationDateStr = sc.next();
+            String expirationDateStr = sc.nextLine();
             expirationDate = sdf.parse(expirationDateStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误");
             return;
         }
 
-        if (expirationDate.before(checkinDate)) {
+        if (expirationDate != null && checkinDate != null && expirationDate.before(checkinDate)) {
             System.out.println("合同到期时间不能小于入住时间");
             return;
         }
 
-        sc.nextLine();
         System.out.print("请输入身心状态：");
         String psychosomaticState = sc.nextLine();
 
         System.out.print("请输入注意事项：");
         String attention = sc.nextLine();
-
-        System.out.print("请输入饮食偏好：");
-        String preferences = sc.nextLine();
 
         Customer customer = new Customer();
         customer.setCustomerName(customerName);
@@ -168,6 +183,7 @@ public class AdminCustomerMenu implements IMenu {
         customer.setAttention(attention);
         customer.setIsDeleted(0);
         customer.setUserId(-1);
+        customer.setLevelId(null);
 
         String result = customerService.addCustomer(customer);
         System.out.println(result);

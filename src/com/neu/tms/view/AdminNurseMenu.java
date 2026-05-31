@@ -101,11 +101,25 @@ public class AdminNurseMenu implements IMenu {
         System.out.print("请输入管家姓名（直接回车查询全部）：");
         String managerName = sc.nextLine();
         
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            System.out.println("系统中没有健康管家角色");
+            return;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+        
         List<TUser> allManagers = userDao.findAll();
         List<TUser> managers = new ArrayList<>();
         
         for (TUser user : allManagers) {
-            if (user.getRoleId() != null && user.getRoleId() == 2) {
+            if (user.getRoleId() != null && healthManagerRoleIds.contains(user.getRoleId())) {
                 if (managerName.isEmpty() || 
                         (user.getNickname() != null && user.getNickname().contains(managerName))) {
                     managers.add(user);
@@ -145,11 +159,25 @@ public class AdminNurseMenu implements IMenu {
         String managerName = sc.next();
         sc.nextLine(); // 消耗换行符
         
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            System.out.println("系统中没有健康管家角色");
+            return;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+        
         List<TUser> allManagers = userDao.findAll();
         List<TUser> managers = new ArrayList<>();
         
         for (TUser user : allManagers) {
-            if (user.getRoleId() != null && user.getRoleId() == 2) {
+            if (user.getRoleId() != null && healthManagerRoleIds.contains(user.getRoleId())) {
                 if (user.getNickname() != null && user.getNickname().contains(managerName)) {
                     managers.add(user);
                 }

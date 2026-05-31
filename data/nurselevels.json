@@ -1,1 +1,21 @@
-[{"id":27,"levelName":"一级护理","levelStatus":2,"isDeleted":0},{"id":34,"levelName":"一级护理","levelStatus":1,"isDeleted":1},{"id":41,"levelName":"一级护理","levelStatus":1,"isDeleted":0},{"id":48,"levelName":"五级护理","levelStatus":2,"isDeleted":0},{"id":49,"levelName":"二级护理","levelStatus":1,"isDeleted":0}]
+[ {
+  "id" : 27,
+  "levelName" : "一级护理",
+  "levelStatus" : 2,
+  "isDeleted" : 1
+}, {
+  "id" : 41,
+  "levelName" : "一级护理",
+  "levelStatus" : 1,
+  "isDeleted" : 0
+}, {
+  "id" : 48,
+  "levelName" : "五级护理",
+  "levelStatus" : 2,
+  "isDeleted" : 0
+}, {
+  "id" : 49,
+  "levelName" : "二级护理",
+  "levelStatus" : 1,
+  "isDeleted" : 0
+} ]

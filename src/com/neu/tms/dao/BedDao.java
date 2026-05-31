@@ -68,12 +68,12 @@ public class BedDao {
     }
 
     /**
-     * 根据ID查询
+     * 根据ID查询床位
      */
     public Bed findById(Integer id) {
         List<Bed> allBeds = findAll();
         return allBeds.stream()
-                .filter(b -> b.getId().equals(id))
+                .filter(b -> b.getId() != null && b.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
