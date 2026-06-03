@@ -173,22 +173,61 @@ public class AdminHealthManagerMenu implements IMenu {
 
         System.out.print("\n请选择护工（输入序号）：");
         int workerIndex = sc.nextInt();
+        sc.nextLine();
         TUser selectedWorker = workers.get(workerIndex - 1);
 
-        System.out.print("\n请输入要分配的客户姓名：");
-        String customerName = sc.next();
+        List<Customer> allCustomers = customerDao.findAll();
+        List<Customer> unassignedCustomers = new ArrayList<>();
         
-        List<Customer> customers = customerDao.findByNameLike(customerName);
-        if (customers.isEmpty()) {
-            System.out.println("未找到该客户");
-            return;
+        for (Customer customer : allCustomers) {
+            if (customer.getUserId() == null || customer.getUserId() == -1) {
+                unassignedCustomers.add(customer);
+            }
+        }
+
+        if (!unassignedCustomers.isEmpty()) {
+            System.out.println("\n=== 无护工的客户列表（共 " + unassignedCustomers.size() + " 位）===");
+            System.out.printf("%-4s %-10s %-6s %-6s %-15s %-12s\n", 
+                    "ID", "姓名", "年龄", "性别", "联系电话", "房间号");
+            System.out.println("----------------------------------------------------------------------------------------");
+            
+            for (Customer c : unassignedCustomers) {
+                String sex = (c.getCustomerSex() != null && c.getCustomerSex() == 1) ? "男" : "女";
+                System.out.printf("%-4d %-10s %-6d %-6s %-15s %-12s\n",
+                        c.getId(),
+                        c.getCustomerName(),
+                        c.getCustomerAge(),
+                        sex,
+                        c.getContactTel(),
+                        c.getRoomNo() != null ? c.getRoomNo() : "未分配");
+            }
+        } else {
+            System.out.println("\n当前所有客户都已分配护工");
+        }
+
+        System.out.print("\n请输入要分配的客户姓名（直接回车从上方列表选择）：");
+        String customerName = sc.nextLine();
+        
+        List<Customer> customers;
+        if (customerName.trim().isEmpty()) {
+            customers = unassignedCustomers;
+            if (customers.isEmpty()) {
+                System.out.println("暂无可分配的客户");
+                return;
+            }
+        } else {
+            customers = customerDao.findByNameLike(customerName);
+            if (customers.isEmpty()) {
+                System.out.println("未找到该客户");
+                return;
+            }
         }
 
         System.out.println("\n=== 匹配的客户 ===");
         for (int i = 0; i < customers.size(); i++) {
             Customer c = customers.get(i);
             String currentWorker = "无";
-            if (c.getUserId() != null) {
+            if (c.getUserId() != null && c.getUserId() != -1) {
                 TUser worker = userDao.findById(c.getUserId());
                 if (worker != null) {
                     currentWorker = worker.getNickname();

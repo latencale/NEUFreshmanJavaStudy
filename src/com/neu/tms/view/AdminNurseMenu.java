@@ -23,8 +23,7 @@ public class AdminNurseMenu implements IMenu {
             System.out.println("1. 护理级别管理");
             System.out.println("2. 护理项目管理");
             System.out.println("3. 客户护理设置");
-            System.out.println("4. 护理记录管理");
-            System.out.println("5. 设置服务对象");
+            System.out.println("4. 设置服务对象");
             System.out.println("0. 返回上一级");
             System.out.println("===========================");
             System.out.print("请选择：");
@@ -42,9 +41,6 @@ public class AdminNurseMenu implements IMenu {
                         setCustomerNurse(sc);
                         break;
                     case 4:
-                        manageNurseRecord(sc);
-                        break;
-                    case 5:
                         assignServiceObjects(sc);
                         break;
                     case 0:
@@ -54,7 +50,7 @@ public class AdminNurseMenu implements IMenu {
                 }
             } catch (Exception e) {
                 System.out.println("输入无效，请输入数字选项");
-                sc.next(); // 清除非法输入，防止死循环
+                sc.next();
             }
         }
     }
@@ -900,119 +896,5 @@ public class AdminNurseMenu implements IMenu {
         }
         NurseContent content = nurseContentDao.findById(contentId);
         return content != null ? content.getNursingName() : "未知";
-    }
-
-    /**
-     * 护理记录管理
-     */
-    private void manageNurseRecord(Scanner sc) {
-        while (true) {
-            System.out.println("\n==========护理记录管理==========");
-            System.out.println("1. 查询所有护理记录");
-            System.out.println("2. 按客户查询护理记录");
-            System.out.println("3. 删除护理记录");
-            System.out.println("0. 返回上一级");
-            System.out.println("===============================");
-            System.out.print("请选择：");
-
-            try {
-                int choice = sc.nextInt();
-                sc.nextLine();
-                switch (choice) {
-                    case 1:
-                        listAllNurseRecords();
-                        break;
-                    case 2:
-                        listNurseRecordsByCustomer(sc);
-                        break;
-                    case 3:
-                        deleteNurseRecord(sc);
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        System.out.println("输入有误，请重新输入");
-                }
-            } catch (Exception e) {
-                System.out.println("输入无效，请输入数字选项");
-                sc.next();
-            }
-        }
-    }
-
-    private void listAllNurseRecords() {
-        System.out.println("\n==========护理记录列表==========");
-        List<NurseRecord> records = nurseRecordDao.findAll();
-        if (records.isEmpty()) {
-            System.out.println("暂无护理记录");
-            return;
-        }
-
-        System.out.printf("%-4s %-10s %-20s %-10s %-15s\n", "ID", "客户姓名", "护理时间", "次数", "状态");
-        System.out.println("--------------------------------------------------------------------------------");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        for (NurseRecord record : records) {
-            String customerName = getCustomerName(record.getCustomerId());
-            String status = record.getIsDeleted() == 1 ? "已删除" : "正常";
-            System.out.printf("%-4d %-10s %-20s %-10d %-15s\n",
-                    record.getId(),
-                    customerName,
-                    sdf.format(record.getNursingTime()),
-                    record.getNursingCount(),
-                    status);
-        }
-    }
-
-    private void listNurseRecordsByCustomer(Scanner sc) {
-        System.out.println("\n==========按客户查询==========");
-        listCustomersForNurse();
-        System.out.print("请输入客户ID：");
-        int customerId = sc.nextInt();
-        sc.nextLine();
-
-        List<NurseRecord> records = nurseRecordDao.findByCustomerId(customerId);
-        if (records.isEmpty()) {
-            System.out.println("该客户暂无护理记录");
-            return;
-        }
-
-        System.out.println("\n=== 护理记录列表 ===");
-        System.out.printf("%-4s %-20s %-10s %-15s\n", "ID", "护理时间", "次数", "状态");
-        System.out.println("--------------------------------------------------------");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        for (NurseRecord record : records) {
-            String status = record.getIsDeleted() == 1 ? "已删除" : "正常";
-            System.out.printf("%-4d %-20s %-10d %-15s\n",
-                    record.getId(),
-                    sdf.format(record.getNursingTime()),
-                    record.getNursingCount(),
-                    status);
-        }
-    }
-
-    private void deleteNurseRecord(Scanner sc) {
-        System.out.println("\n==========删除护理记录==========");
-        listAllNurseRecords();
-        System.out.print("请输入要删除的记录ID：");
-        int id = sc.nextInt();
-        sc.nextLine();
-
-        System.out.print("确认删除？（y/n）：");
-        String confirm = sc.nextLine();
-        if (!"y".equalsIgnoreCase(confirm)) {
-            System.out.println("已取消删除");
-            return;
-        }
-
-        boolean result = nurseRecordDao.deleteById(id);
-        System.out.println(result ? "删除成功" : "删除失败");
-    }
-
-    private String getCustomerName(Integer customerId) {
-        if (customerId == null) {
-            return "未知";
-        }
-        Customer customer = customerDao.findById(customerId);
-        return customer != null ? customer.getCustomerName() : "未知";
     }
 }
