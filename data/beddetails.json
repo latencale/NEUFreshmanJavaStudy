@@ -14,4 +14,12 @@
   "customerId" : 40,
   "bedId" : 69,
   "isDeleted" : 0
+}, {
+  "id" : 87,
+  "startDate" : 1780213204424,
+  "endDate" : null,
+  "bedDetails" : "床位调换",
+  "customerId" : 82,
+  "bedId" : 85,
+  "isDeleted" : 0
 } ]

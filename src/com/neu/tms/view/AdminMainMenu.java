@@ -16,7 +16,7 @@ public class AdminMainMenu {
             System.out.println("【护理管理】");
             System.out.println("4. 护理管理（级别/项目/客户设置/记录）");
             System.out.println("【健康管家管理】");
-            System.out.println("5. 健康管家管理（设置对象/服务关注）");
+            System.out.println("5. 健康管家管理（设置对象/查看/分配/移除/服务关注）");
             System.out.println("【系统】");
             System.out.println("0. 退出登录");
             System.out.println("====================================");
@@ -46,6 +46,8 @@ public class AdminMainMenu {
                     break;
                 case 0:
                     System.out.println("退出登录成功");
+                    System.out.println("\n返回主菜单...\n");
+                    MainMenu.main(new String[]{});
                     return;
                 default:
                     System.out.println("输入有误，请重新输入");

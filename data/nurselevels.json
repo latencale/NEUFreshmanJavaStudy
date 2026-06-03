@@ -1,9 +1,4 @@
 [ {
-  "id" : 27,
-  "levelName" : "一级护理",
-  "levelStatus" : 2,
-  "isDeleted" : 1
-}, {
   "id" : 41,
   "levelName" : "一级护理",
   "levelStatus" : 1,
@@ -18,4 +13,9 @@
   "levelName" : "二级护理",
   "levelStatus" : 1,
   "isDeleted" : 0
+}, {
+  "id" : 83,
+  "levelName" : "",
+  "levelStatus" : 0,
+  "isDeleted" : 1
 } ]

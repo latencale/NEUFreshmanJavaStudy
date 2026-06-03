@@ -111,6 +111,8 @@ public class WorkerOutwardMenu implements IMenu {
             System.out.println("\n==========外出登记==========");
             System.out.println("客户：" + selectedCustomer.getCustomerName());
             
+            sc.nextLine(); // 清除残留的换行符
+            
             System.out.print("请输入外出事由：");
             String reason = sc.nextLine();
             if (reason.isEmpty()) {
@@ -135,12 +137,11 @@ public class WorkerOutwardMenu implements IMenu {
 
             Outward outward = new Outward();
             outward.setCustomerId(selectedCustomer.getId());
-            // 注意：Outward类中没有userId字段，使用remarks记录申请人
             outward.setRemarks("申请人: " + currentUser.getNickname() + "(" + currentUser.getUsername() + ")");
             outward.setOutgoingReason(reason);
             outward.setOutgoingTime(outTime);
             outward.setExpectedReturnTime(expectedReturnTime);
-            outward.setAuditStatus(0); // 0:已提交（默认状态）
+            outward.setAuditStatus(0);
             outward.setCreateTime(new Date());
 
             String result = outwardDao.addOutward(outward);

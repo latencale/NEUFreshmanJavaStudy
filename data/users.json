@@ -54,4 +54,18 @@
   "email" : "0",
   "phoneNumber" : "001",
   "roleId" : 46
+}, {
+  "id" : 88,
+  "createTime" : 1780213932015,
+  "createBy" : "admin",
+  "updateTime" : null,
+  "updateBy" : null,
+  "isDeleted" : 0,
+  "nickname" : "张",
+  "username" : "002",
+  "password" : "002",
+  "sex" : 11,
+  "email" : "2",
+  "phoneNumber" : "124341",
+  "roleId" : 46
 } ]

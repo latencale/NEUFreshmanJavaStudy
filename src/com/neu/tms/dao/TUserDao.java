@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.*;
+import com.neu.tms.pojo.Role;
 
 
 public class TUserDao {
@@ -163,7 +164,42 @@ public class TUserDao {
         List<TUser> userList = findAll();
 
         for (TUser db_user : userList) {
-            if (db_user.getUsername().equals(userName)&&db_user.getPassword().equals(password)&&db_user.getRoleId()==userType) {
+            if (db_user.getUsername().equals(userName) && 
+                db_user.getPassword().equals(password) && 
+                db_user.getRoleId() != null && 
+                db_user.getRoleId() == userType) {
+                return db_user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 根据用户名和密码查询健康管家（支持动态角色ID）
+     */
+    public TUser findByWorkerByNameAndPassword(String userName, String password) {
+        List<TUser> userList = findAll();
+        
+        // 先查询健康管家的角色ID列表
+        RoleDao roleDao = new RoleDao();
+        List<Role> healthManagerRoles = roleDao.findAll().stream()
+                .filter(r -> "健康管家".equals(r.getName()))
+                .toList();
+        
+        if (healthManagerRoles.isEmpty()) {
+            return null;
+        }
+        
+        List<Integer> healthManagerRoleIds = healthManagerRoles.stream()
+                .map(Role::getId)
+                .toList();
+
+        for (TUser db_user : userList) {
+            if (db_user.getUsername() != null && db_user.getUsername().equals(userName) &&
+                db_user.getPassword() != null && db_user.getPassword().equals(password) &&
+                db_user.getRoleId() != null && 
+                healthManagerRoleIds.contains(db_user.getRoleId())) {
                 return db_user;
             }
         }

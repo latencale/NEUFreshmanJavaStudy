@@ -21,7 +21,7 @@ public class WorkerMainMenu implements IMenu {
             System.out.println("2. 服务对象护理记录");
             System.out.println("3. 外出申请");
             System.out.println("4. 退住申请");
-            System.out.println("5. 退出登录");
+            System.out.println("0. 退出登录");
             System.out.println("================================");
             System.out.print("请选择：");
 
@@ -43,8 +43,10 @@ public class WorkerMainMenu implements IMenu {
                     WorkerBackDownMenu backDownMenu = new WorkerBackDownMenu(currentUser);
                     backDownMenu.execute();
                     break;
-                case 5:
+                case 0:
                     System.out.println("退出登录成功");
+                    System.out.println("\n返回主菜单...\n");
+                    MainMenu.main(new String[]{});
                     return;
                 default:
                     System.out.println("输入有误，请重新输入");

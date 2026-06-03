@@ -1,1 +1,45 @@
-[{"id":30,"remarks":null,"isDeleted":0,"customerId":26,"retreatTime":1780243200000,"retreatType":1,"retreatReason":"回家居住","auditStatus":1,"auditPerson":"管理员","auditTime":1780138739597},{"id":37,"remarks":null,"isDeleted":0,"customerId":26,"retreatTime":1780243200000,"retreatType":1,"retreatReason":"回家居住","auditStatus":0,"auditPerson":null,"auditTime":null},{"id":44,"remarks":null,"isDeleted":0,"customerId":26,"retreatTime":1780243200000,"retreatType":1,"retreatReason":"回家居住","auditStatus":0,"auditPerson":null,"auditTime":null}]
+[ {
+  "id" : 30,
+  "remarks" : null,
+  "isDeleted" : 0,
+  "customerId" : 26,
+  "retreatTime" : 1780243200000,
+  "retreatType" : 1,
+  "retreatReason" : "回家居住",
+  "auditStatus" : 1,
+  "auditPerson" : "管理员",
+  "auditTime" : 1780138739597
+}, {
+  "id" : 37,
+  "remarks" : null,
+  "isDeleted" : 0,
+  "customerId" : 26,
+  "retreatTime" : 1780243200000,
+  "retreatType" : 1,
+  "retreatReason" : "回家居住",
+  "auditStatus" : 1,
+  "auditPerson" : "admin",
+  "auditTime" : 1780222455524
+}, {
+  "id" : 44,
+  "remarks" : null,
+  "isDeleted" : 0,
+  "customerId" : 26,
+  "retreatTime" : 1780243200000,
+  "retreatType" : 1,
+  "retreatReason" : "回家居住",
+  "auditStatus" : 0,
+  "auditPerson" : null,
+  "auditTime" : null
+}, {
+  "id" : 91,
+  "remarks" : "申请人: 小王(001)",
+  "isDeleted" : 0,
+  "customerId" : 82,
+  "retreatTime" : 1780222319217,
+  "retreatType" : 1,
+  "retreatReason" : "天伦之乐",
+  "auditStatus" : 1,
+  "auditPerson" : "admin",
+  "auditTime" : 1780222468521
+} ]
