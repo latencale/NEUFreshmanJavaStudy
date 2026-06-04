@@ -42,4 +42,15 @@
   "auditStatus" : 1,
   "auditPerson" : "admin",
   "auditTime" : 1780222468521
+}, {
+  "id" : 94,
+  "remarks" : "申请人: 小王(001)",
+  "isDeleted" : 0,
+  "customerId" : 82,
+  "retreatTime" : 1780549034019,
+  "retreatType" : 1,
+  "retreatReason" : "回家居住",
+  "auditStatus" : 1,
+  "auditPerson" : "admin",
+  "auditTime" : 1780549098914
 } ]

@@ -69,7 +69,7 @@
   "familyMember" : "儿子-张三"
 }, {
   "id" : 82,
-  "isDeleted" : 0,
+  "isDeleted" : 1,
   "customerName" : "老王",
   "customerAge" : 57,
   "customerSex" : 1,
@@ -87,7 +87,7 @@
   "weight" : "67",
   "bloodType" : "o",
   "filepath" : null,
-  "userId" : 80,
+  "userId" : null,
   "levelId" : 41,
   "familyMember" : "小王"
 } ]

@@ -10,6 +10,9 @@ import com.neu.tms.utils.PersistentIdGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +37,10 @@ public class BackDownDao {
                 backDown.setAuditStatus(0); // 默认已提交
             }
             list.add(backDown);
-            om.writeValue(FILE_NAME, list);
+            try (Writer writer = new OutputStreamWriter(
+                    new java.io.FileOutputStream(FILE_NAME), StandardCharsets.UTF_8)) {
+                om.writeValue(writer, list);
+            }
             return "添加成功";
         } catch (Exception e) {
             throw new RuntimeException("添加退住登记失败", e);
@@ -125,7 +131,10 @@ public class BackDownDao {
             }
 
             if (isUpdate) {
-                om.writeValue(FILE_NAME, list);
+                try (Writer writer = new OutputStreamWriter(
+                        new java.io.FileOutputStream(FILE_NAME), StandardCharsets.UTF_8)) {
+                    om.writeValue(writer, list);
+                }
             }
             return isUpdate;
         } catch (IOException e) {
@@ -150,7 +159,10 @@ public class BackDownDao {
             }
 
             if (isDelete) {
-                om.writeValue(FILE_NAME, list);
+                try (Writer writer = new OutputStreamWriter(
+                        new java.io.FileOutputStream(FILE_NAME), StandardCharsets.UTF_8)) {
+                    om.writeValue(writer, list);
+                }
             }
             return isDelete;
         } catch (IOException e) {

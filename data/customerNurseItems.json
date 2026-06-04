@@ -39,7 +39,7 @@
   "itemId" : 42,
   "customerId" : 82,
   "levelId" : null,
-  "nurseNumber" : 1,
+  "nurseNumber" : 0,
   "isDeleted" : 0,
   "buyTime" : 1780210077209,
   "maturityTime" : 1782802077209

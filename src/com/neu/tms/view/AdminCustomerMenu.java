@@ -470,6 +470,19 @@ public class AdminCustomerMenu implements IMenu {
             
             Customer customer = customerService.findById(selected.getCustomerId());
             if (customer != null) {
+                // 1. 从健康管家的服务列表中移除（清空userId）
+                if (customer.getUserId() != null) {
+                    customer.setUserId(null);
+                    customerService.updateCustomer(customer);
+                    System.out.println("已从健康管家的服务客户列表中移除该客户");
+                }
+                
+                // 2. 逻辑删除客户
+                customer.setIsDeleted(1);
+                customerService.updateCustomer(customer);
+                System.out.println("已将客户状态设置为已退住");
+                
+                // 3. 处理床位状态
                 if (selected.getRetreatType() == 0 || selected.getRetreatType() == 1) {
                     if (customer.getBedId() != null) {
                         com.neu.tms.dao.BedDao bedDao = new com.neu.tms.dao.BedDao();
