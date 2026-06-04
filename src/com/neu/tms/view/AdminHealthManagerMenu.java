@@ -174,6 +174,10 @@ public class AdminHealthManagerMenu implements IMenu {
         System.out.print("\n请选择护工（输入序号）：");
         int workerIndex = sc.nextInt();
         sc.nextLine();
+        if (workerIndex < 1 || workerIndex > workers.size()) {
+            System.out.println("无效选择，请输入1-" + workers.size() + "之间的数字");
+            return;
+        }
         TUser selectedWorker = workers.get(workerIndex - 1);
 
         List<Customer> allCustomers = customerDao.findAll();
@@ -294,6 +298,10 @@ public class AdminHealthManagerMenu implements IMenu {
 
         System.out.print("\n请选择护工（输入序号）：");
         int workerIndex = sc.nextInt();
+        if (workerIndex < 1 || workerIndex > workers.size()) {
+            System.out.println("无效选择，请输入1-" + workers.size() + "之间的数字");
+            return;
+        }
         TUser selectedWorker = workers.get(workerIndex - 1);
 
         List<Customer> allCustomers = customerDao.findAll();

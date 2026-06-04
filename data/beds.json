@@ -40,4 +40,11 @@
   "remarks" : null,
   "bedNo" : "C",
   "isDeleted" : 0
+}, {
+  "id" : 92,
+  "roomNo" : 102,
+  "bedStatus" : 1,
+  "remarks" : "行动不便",
+  "bedNo" : "A",
+  "isDeleted" : 0
 } ]
