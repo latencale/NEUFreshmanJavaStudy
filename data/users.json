@@ -68,4 +68,18 @@
   "email" : "2",
   "phoneNumber" : "124341",
   "roleId" : 46
+}, {
+  "id" : 99,
+  "createTime" : 1780636932633,
+  "createBy" : "admin",
+  "updateTime" : null,
+  "updateBy" : null,
+  "isDeleted" : 0,
+  "nickname" : "小小",
+  "username" : "003",
+  "password" : "123456",
+  "sex" : 1,
+  "email" : "1234567",
+  "phoneNumber" : "123456",
+  "roleId" : 46
 } ]

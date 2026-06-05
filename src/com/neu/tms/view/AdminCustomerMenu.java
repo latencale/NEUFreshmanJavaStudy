@@ -89,24 +89,30 @@ public class AdminCustomerMenu implements IMenu {
         System.out.print("请输入客户姓名：");
         String customerName = sc.nextLine();
 
-        System.out.print("请输入出生日期（yyyy-MM-dd）：");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date birthday = null;
-        try {
-            String birthdayStr = sc.nextLine();
-            birthday = sdf.parse(birthdayStr);
-        } catch (ParseException e) {
-            System.out.println("日期格式错误");
-            return;
+        // 身份证号输入（验证失败时重新输入）
+        String idCard = null;
+        while (idCard == null) {
+            System.out.print("请输入身份证号：");
+            idCard = sc.nextLine();
+            
+            if (!validateIdCard(idCard)) {
+                System.out.println("身份证号格式不正确，请重新输入！");
+                idCard = null;
+            }
         }
 
+        // 从身份证号提取出生日期和性别
+        Date birthday = parseBirthdayFromIdCard(idCard);
+        Integer customerSex = parseSexFromIdCard(idCard);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println("从身份证号解析出出生日期：" + sdf.format(birthday));
+
         Integer customerAge = calculateAge(birthday);
+        System.out.println("根据出生日期计算年龄：" + customerAge + " 岁");
 
-        System.out.print("请输入性别（0-女 1-男）：");
-        Integer customerSex = Integer.parseInt(sc.nextLine());
-
-        System.out.print("请输入身份证号：");
-        String idCard = sc.nextLine();
+        String sexStr = customerSex == 1 ? "男" : "女";
+        System.out.println("从身份证号解析出性别：" + sexStr);
 
         System.out.print("请输入血型：");
         String bloodType = sc.nextLine();
@@ -126,16 +132,63 @@ public class AdminCustomerMenu implements IMenu {
         System.out.println("楼栋固定为：606");
         String buildingNo = "606";
 
-        System.out.print("请输入房间号：");
+        // 显示空闲房间列表
+        System.out.println("\n=== 当前空闲房间列表 ===");
+        List<String> availableRooms = availableBeds.stream()
+                .map(bed -> bed.getRoomNo().toString())
+                .distinct()
+                .sorted()
+                .toList();
+        
+        if (availableRooms.isEmpty()) {
+            System.out.println("当前没有空闲房间！");
+            return;
+        }
+        
+        System.out.println("可用房间号：");
+        for (int i = 0; i < availableRooms.size(); i++) {
+            System.out.println((i + 1) + ". " + availableRooms.get(i));
+        }
+        
+        System.out.print("\n请输入房间号（从上面列表中选择）：");
         String roomNo = sc.nextLine();
+        
+        // 验证房间号是否在可用列表中
+        if (!availableRooms.contains(roomNo)) {
+            System.out.println("房间号无效，请从可用房间列表中选择！");
+            return;
+        }
 
-        System.out.print("请输入床位号：");
+        // 显示该房间的空闲床位
+        System.out.println("\n=== " + roomNo + " 房间的空闲床位 ===");
+        List<com.neu.tms.pojo.Bed> roomBeds = availableBeds.stream()
+                .filter(bed -> bed.getRoomNo().toString().equals(roomNo))
+                .toList();
+        
+        System.out.printf("%-10s %-10s\n", "床位ID", "床位号");
+        System.out.println("------------------");
+        for (com.neu.tms.pojo.Bed bed : roomBeds) {
+            System.out.printf("%-10d %-10s\n", bed.getId(), bed.getBedNo());
+        }
+        
+        System.out.print("\n请输入床位号（从上面列表中选择）：");
         Integer bedId = Integer.parseInt(sc.nextLine());
+        
+        // 验证床位ID是否在该房间的可用床位列表中
+        boolean bedValid = roomBeds.stream()
+                .anyMatch(bed -> bed.getId().equals(bedId));
+        
+        if (!bedValid) {
+            System.out.println("床位ID无效，请从该房间的可用床位列表中选择！");
+            return;
+        }
 
         System.out.print("请输入入住时间（yyyy-MM-dd）：");
         Date checkinDate = null;
         try {
             String checkinDateStr = sc.nextLine();
+                    SimpleDateFormat sdfCheckin = new SimpleDateFormat("yyyy-MM-dd");
+                    checkinDate = sdfCheckin.parse(checkinDateStr);
             checkinDate = sdf.parse(checkinDateStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误");
@@ -146,7 +199,8 @@ public class AdminCustomerMenu implements IMenu {
         Date expirationDate = null;
         try {
             String expirationDateStr = sc.nextLine();
-            expirationDate = sdf.parse(expirationDateStr);
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            expirationDate = sdf2.parse(expirationDateStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误");
             return;
@@ -732,5 +786,210 @@ public class AdminCustomerMenu implements IMenu {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
+    }
+  
+    /**
+     * 从身份证号解析出生日期
+     * @param idCard 身份证号
+     * @return 出生日期，如果解析失败返回null
+     */
+    private Date parseBirthdayFromIdCard(String idCard) {
+        if (idCard == null || idCard.trim().isEmpty()) {
+            return null;
+        }
+        
+        String cleanIdCard = idCard.trim().toUpperCase();
+        
+        try {
+            String birthStr;
+            if (cleanIdCard.length() == 18) {
+                // 18位身份证：第7-14位是出生日期（YYYYMMDD）
+                birthStr = cleanIdCard.substring(6, 14);
+            } else if (cleanIdCard.length() == 15) {
+                // 15位身份证：第7-12位是出生日期（YYMMDD），需要补全年份
+                birthStr = "19" + cleanIdCard.substring(6, 12);
+            } else {
+                return null;
+            }
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            return sdf.parse(birthStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 从身份证号解析性别
+     * @param idCard 身份证号
+     * @return 性别（1-男，0-女），如果解析失败返回null
+     */
+    private Integer parseSexFromIdCard(String idCard) {
+        if (idCard == null || idCard.trim().isEmpty()) {
+            return null;
+        }
+        
+        String cleanIdCard = idCard.trim().toUpperCase();
+        
+        try {
+            int sexIndex;
+            if (cleanIdCard.length() == 18) {
+                // 18位身份证：第17位是性别码
+                sexIndex = 16;
+            } else if (cleanIdCard.length() == 15) {
+                // 15位身份证：第15位是性别码
+                sexIndex = 14;
+            } else {
+                return null;
+            }
+            
+            char sexChar = cleanIdCard.charAt(sexIndex);
+            int sexCode = Character.getNumericValue(sexChar);
+            
+            // 奇数为男，偶数为女
+            return (sexCode % 2 == 1) ? 1 : 0;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 验证身份证号是否合规
+     * @param idCard 身份证号
+     * @return true表示合规，false表示不合规
+     */
+    private boolean validateIdCard(String idCard) {
+        if (idCard == null || idCard.trim().isEmpty()) {
+            System.out.println("错误：身份证号不能为空");
+            return false;
+        }
+        
+        String cleanIdCard = idCard.trim().toUpperCase();
+        
+        // 检查位数（15位或18位）
+        if (cleanIdCard.length() != 15 && cleanIdCard.length() != 18) {
+            System.out.println("错误：身份证号位数不正确");
+            return false;
+        }
+        
+        // 18位身份证验证
+        if (cleanIdCard.length() == 18) {
+            // 前17位必须是数字
+            String numPart = cleanIdCard.substring(0, 17);
+            if (!numPart.matches("\\d{17}")) {
+                System.out.println("错误：身份证号前17位必须是数字");
+                return false;
+            }
+            
+            // 第18位必须是数字或X
+            char lastChar = cleanIdCard.charAt(17);
+            if (!Character.isDigit(lastChar) && lastChar != 'X') {
+                System.out.println("错误：身份证号第18位必须是数字或X");
+                return false;
+            }
+            
+            // 验证出生日期
+            String birthStr = cleanIdCard.substring(6, 14);
+            if (!validateDate(birthStr)) {
+                System.out.println("错误：身份证号中的出生日期不正确");
+                return false;
+            }
+            
+            // 验证校验码
+            if (!validateChecksum(cleanIdCard)) {
+                System.out.println("错误：身份证号校验码不正确");
+                return false;
+            }
+        } else {
+            // 15位身份证验证
+            // 必须全部是数字
+            if (!cleanIdCard.matches("\\d{15}")) {
+                System.out.println("错误：15位身份证号必须全部是数字");
+                return false;
+            }
+            
+            // 验证出生日期（15位身份证年份是2位，补19前缀）
+            String birthStr = "19" + cleanIdCard.substring(6, 12);
+            if (!validateDate(birthStr)) {
+                System.out.println("错误：身份证号中的出生日期不正确");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * 验证日期格式是否正确（YYYYMMDD格式）
+     */
+    private boolean validateDate(String dateStr) {
+        if (dateStr.length() != 8) {
+            return false;
+        }
+        
+        try {
+            int year = Integer.parseInt(dateStr.substring(0, 4));
+            int month = Integer.parseInt(dateStr.substring(4, 6));
+            int day = Integer.parseInt(dateStr.substring(6, 8));
+            
+            // 年份范围检查（1900-2099）
+            if (year < 1900 || year > 2099) {
+                return false;
+            }
+            
+            // 月份检查
+            if (month < 1 || month > 12) {
+                return false;
+            }
+            
+            // 日期检查
+            int[] daysInMonth = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            if (day < 1 || day > daysInMonth[month - 1]) {
+                return false;
+            }
+            
+            // 闰年检查（2月29日）
+            if (month == 2 && day == 29) {
+                if (!isLeapYear(year)) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否为闰年
+     */
+    private boolean isLeapYear(int year) {
+        return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+    }
+
+    /**
+     * 验证18位身份证校验码
+     */
+    private boolean validateChecksum(String idCard) {
+        if (idCard.length() != 18) {
+            return false;
+        }
+        
+        // 加权因子
+        int[] weights = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        // 校验码对应表
+        char[] checkCodes = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
+        
+        int sum = 0;
+        for (int i = 0; i < 17; i++) {
+            sum += (idCard.charAt(i) - '0') * weights[i];
+        }
+        
+        int remainder = sum % 11;
+        char expectedCheckCode = checkCodes[remainder];
+        char actualCheckCode = idCard.charAt(17);
+        
+        return expectedCheckCode == actualCheckCode;
     }
 }

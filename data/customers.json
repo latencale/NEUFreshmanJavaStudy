@@ -1,6 +1,6 @@
 [ {
   "id" : 26,
-  "isDeleted" : 0,
+  "isDeleted" : 1,
   "customerName" : "a",
   "customerAge" : 66,
   "customerSex" : 1,
@@ -18,8 +18,8 @@
   "weight" : "65",
   "bloodType" : "A",
   "filepath" : null,
-  "userId" : 74,
-  "levelId" : 1,
+  "userId" : null,
+  "levelId" : 41,
   "familyMember" : "儿子-张三"
 }, {
   "id" : 33,
@@ -42,7 +42,7 @@
   "bloodType" : "A",
   "filepath" : null,
   "userId" : 74,
-  "levelId" : null,
+  "levelId" : 49,
   "familyMember" : "儿子-张三"
 }, {
   "id" : 40,
@@ -68,26 +68,26 @@
   "levelId" : null,
   "familyMember" : "儿子-张三"
 }, {
-  "id" : 82,
-  "isDeleted" : 1,
-  "customerName" : "老王",
-  "customerAge" : 57,
+  "id" : 95,
+  "isDeleted" : 0,
+  "customerName" : "李四",
+  "customerAge" : 36,
   "customerSex" : 1,
-  "idCard" : "124352467568798",
-  "roomNo" : "301",
+  "idCard" : "110101199003071233",
+  "roomNo" : "101",
   "buildingNo" : "606",
-  "checkinDate" : 1109779200000,
-  "expirationDate" : 4202121600000,
-  "contactTel" : "1234566789",
-  "bedId" : 85,
+  "checkinDate" : 1780588800000,
+  "expirationDate" : 1797955200000,
+  "contactTel" : "13454325",
+  "bedId" : 25,
   "psychosomaticState" : "",
-  "attention" : "高血糖",
-  "birthday" : -23616000000,
-  "height" : "189",
+  "attention" : "",
+  "birthday" : 636739200000,
+  "height" : "178",
   "weight" : "67",
-  "bloodType" : "o",
+  "bloodType" : "A",
   "filepath" : null,
-  "userId" : null,
-  "levelId" : 41,
-  "familyMember" : "小王"
+  "userId" : 80,
+  "levelId" : null,
+  "familyMember" : "李筱思"
 } ]

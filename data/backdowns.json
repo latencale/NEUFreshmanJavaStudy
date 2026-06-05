@@ -28,9 +28,9 @@
   "retreatTime" : 1780243200000,
   "retreatType" : 1,
   "retreatReason" : "回家居住",
-  "auditStatus" : 0,
-  "auditPerson" : null,
-  "auditTime" : null
+  "auditStatus" : 1,
+  "auditPerson" : "admin",
+  "auditTime" : 1780637203767
 }, {
   "id" : 91,
   "remarks" : "申请人: 小王(001)",
@@ -53,4 +53,15 @@
   "auditStatus" : 1,
   "auditPerson" : "admin",
   "auditTime" : 1780549098914
+}, {
+  "id" : 104,
+  "remarks" : "申请人: 小王(001)",
+  "isDeleted" : 0,
+  "customerId" : 95,
+  "retreatTime" : 1780637565162,
+  "retreatType" : 1,
+  "retreatReason" : "天伦之乐",
+  "auditStatus" : 0,
+  "auditPerson" : null,
+  "auditTime" : null
 } ]

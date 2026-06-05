@@ -115,8 +115,36 @@ public class AdminUserMenu implements IMenu {
             finalPassword = password;
         }
 
-        System.out.print("请输入性别（0-女 1-男）：");
-        Integer sex = sc.nextInt();
+        // 身份证号输入（可选，但如果输入需要验证）
+        String idCard = null;
+        while (idCard == null) {
+            System.out.print("请输入身份证号（可选，直接回车跳过）：");
+            idCard = sc.next();
+            
+            // 空输入表示跳过
+            if (idCard.isEmpty()) {
+                break;
+            }
+            
+            // 验证身份证号
+            if (!validateIdCard(idCard)) {
+                System.out.println("身份证号格式不正确，请重新输入或直接回车跳过！");
+                idCard = null;
+            }
+        }
+
+        Integer sex = null;
+        if (idCard != null && !idCard.isEmpty()) {
+            sex = parseSexFromIdCard(idCard);
+        }
+        
+        if (sex == null) {
+            System.out.print("请输入性别（0-女 1-男）：");
+            sex = sc.nextInt();
+        } else {
+            String sexStr = sex == 1 ? "男" : "女";
+            System.out.println("从身份证号解析出性别：" + sexStr);
+        }
 
         System.out.print("请输入邮箱（可为空，直接回车跳过）：");
         String email = sc.next();
@@ -396,5 +424,168 @@ public class AdminUserMenu implements IMenu {
         } else {
             System.out.println("已取消删除操作");
         }
+    }
+
+    /**
+     * 从身份证号解析性别
+     * @param idCard 身份证号
+     * @return 性别（1-男，0-女），如果解析失败返回null
+     */
+    private Integer parseSexFromIdCard(String idCard) {
+        if (idCard == null || idCard.trim().isEmpty()) {
+            return null;
+        }
+        
+        String cleanIdCard = idCard.trim().toUpperCase();
+        
+        try {
+            int sexIndex;
+            if (cleanIdCard.length() == 18) {
+                sexIndex = 16;
+            } else if (cleanIdCard.length() == 15) {
+                sexIndex = 14;
+            } else {
+                return null;
+            }
+            
+            char sexChar = cleanIdCard.charAt(sexIndex);
+            int sexCode = Character.getNumericValue(sexChar);
+            
+            return (sexCode % 2 == 1) ? 1 : 0;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 验证身份证号是否合规
+     * @param idCard 身份证号
+     * @return true表示合规，false表示不合规
+     */
+    private boolean validateIdCard(String idCard) {
+        if (idCard == null || idCard.trim().isEmpty()) {
+            System.out.println("错误：身份证号不能为空");
+            return false;
+        }
+        
+        String cleanIdCard = idCard.trim().toUpperCase();
+        
+        // 检查位数（15位或18位）
+        if (cleanIdCard.length() != 15 && cleanIdCard.length() != 18) {
+            System.out.println("错误：身份证号位数不正确，应为15位或18位");
+            return false;
+        }
+        
+        // 18位身份证验证
+        if (cleanIdCard.length() == 18) {
+            // 前17位必须是数字
+            String numPart = cleanIdCard.substring(0, 17);
+            if (!numPart.matches("\\d{17}")) {
+                System.out.println("错误：身份证号前17位必须是数字");
+                return false;
+            }
+            
+            // 第18位必须是数字或X
+            char lastChar = cleanIdCard.charAt(17);
+            if (!Character.isDigit(lastChar) && lastChar != 'X') {
+                System.out.println("错误：身份证号第18位必须是数字或X");
+                return false;
+            }
+            
+            // 验证出生日期
+            String birthStr = cleanIdCard.substring(6, 14);
+            if (!validateDate(birthStr)) {
+                System.out.println("错误：身份证号中的出生日期不正确");
+                return false;
+            }
+            
+            // 验证校验码
+            if (!validateChecksum(cleanIdCard)) {
+                System.out.println("错误：身份证号校验码不正确");
+                return false;
+            }
+        } else {
+            // 15位身份证验证
+            if (!cleanIdCard.matches("\\d{15}")) {
+                System.out.println("错误：15位身份证号必须全部是数字");
+                return false;
+            }
+            
+            String birthStr = "19" + cleanIdCard.substring(6, 12);
+            if (!validateDate(birthStr)) {
+                System.out.println("错误：身份证号中的出生日期不正确");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * 验证日期格式是否正确（YYYYMMDD格式）
+     */
+    private boolean validateDate(String dateStr) {
+        if (dateStr.length() != 8) {
+            return false;
+        }
+        
+        try {
+            int year = Integer.parseInt(dateStr.substring(0, 4));
+            int month = Integer.parseInt(dateStr.substring(4, 6));
+            int day = Integer.parseInt(dateStr.substring(6, 8));
+            
+            if (year < 1900 || year > 2099) {
+                return false;
+            }
+            
+            if (month < 1 || month > 12) {
+                return false;
+            }
+            
+            int[] daysInMonth = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            if (day < 1 || day > daysInMonth[month - 1]) {
+                return false;
+            }
+            
+            if (month == 2 && day == 29) {
+                if (!isLeapYear(year)) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否为闰年
+     */
+    private boolean isLeapYear(int year) {
+        return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+    }
+
+    /**
+     * 验证18位身份证校验码
+     */
+    private boolean validateChecksum(String idCard) {
+        if (idCard.length() != 18) {
+            return false;
+        }
+        
+        int[] weights = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        char[] checkCodes = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
+        
+        int sum = 0;
+        for (int i = 0; i < 17; i++) {
+            sum += (idCard.charAt(i) - '0') * weights[i];
+        }
+        
+        int remainder = sum % 11;
+        char expectedCheckCode = checkCodes[remainder];
+        char actualCheckCode = idCard.charAt(17);
+        
+        return expectedCheckCode == actualCheckCode;
     }
 }
